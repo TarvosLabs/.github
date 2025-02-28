@@ -1,0 +1,5 @@
+# raw folder, for work-in-progress artworks
+artwork/raw/
+
+# pycharm stuff
+.idea/
