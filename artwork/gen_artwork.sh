@@ -1,3 +1,4 @@
+#!/bin/bash
 # Generate artwork png files
 
 # color palette for light mode
@@ -22,15 +23,23 @@ for file in editable/*.svg; do
       file_basename="${file_name%.svg}"
       echo "$file_basename"
 
-      # export in all formats
-      for size in "128" "256" "500" "1000";
+      # export in all square formats
+      if [ "$file_basename" == "banner" ]; then
+        size_list=( "500 129" "1000 258" "1500 387" "2000 516" );
+      else
+        size_list=( "128 128" "256 256" "500 500" "1000 1000" );
+      fi
+
+      for size in "${size_list[@]}";
       do
+        size=($size);
+        echo "${size[0]}, ${size[1]}"
         for mode in "light" "dark";
         do
           if [ "$mode" == "light" ]; then
             inkscape --export-area-page \
             --export-filename=output/"$file_basename"_light_"$size".png \
-            --export-height="$size" --export-width="$size" \
+            --export-width="${size[0]}" --export-height="${size[1]}" \
             "$file"
           else
             sed -e "s/$LIGHT_BACKGROUND/$DARK_BACKGROUND/" \
@@ -40,11 +49,11 @@ for file in editable/*.svg; do
               "$file" | inkscape --pipe \
               --export-area-page \
               --export-filename=output/"$file_basename"_dark_"$size".png \
-              --export-height="$size" --export-width="$size"
+              --export-width="${size[0]}" --export-height="${size[1]}"
           fi
         done
       done
-  fi
+    fi
 done
 
 
